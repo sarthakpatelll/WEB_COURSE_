@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    .pending { color: orange; }
+    .approved { color: green; }
+    .rejected { color: red; }
+  </style>
+</head>
+<body>
+  <h2>Admin Dashboard</h2>
+  <p><a href="/admin/logout">Logout</a></p>
+  
+  <% if (submissions.length === 0) { %>
+    <p>No submissions yet.</p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Telegram</th>
+          <th>Transaction ID</th>
+          <th>Proof</th>
+          <th>Status</th>
+          <th>Submitted</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% submissions.forEach(function(sub) { %>
+        <tr>
+          <td><%= sub.telegramUsername %></td>
+          <td><%= sub.transactionId || '-' %></td>
+          <td>
+            <% if (sub.paymentProof) { %>
+              <a href="<%= sub.paymentProof %>" target="_blank">View</a>
+            <% } else { %>
+              No file
+            <% } %>
+          </td>
+          <td class="<%= sub.status %>"><%= sub.status %></td>
+          <td><%= moment(sub.timestamp).format("YYYY-MM-DD HH:mm") %></td>
+          <td>
+            <form method="POST" action="/admin/update-status" style="display:inline;">
+              <input type="hidden" name="id" value="<%= sub.id %>">
+              <select name="status">
+                <option value="pending" <%= sub.status==='pending'?'selected':'' %>>Pending</option>
+                <option value="approved" <%= sub.status==='approved'?'selected':'' %>>Approved</option>
+                <option value="rejected" <%= sub.status==='rejected'?'selected':'' %>>Rejected</option>
+              </select>
+              <button type="submit">Update</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+      </tbody>
+    </table>
+  <% } %>
+</body>
+</html>

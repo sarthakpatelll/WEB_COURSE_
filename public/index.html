@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Telegram Access</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --success-color: #4cc9f0;
+      --text-color: #2b2d42;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .qr-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .qr-code {
+      max-width: 200px;
+      margin: 0 auto;
+      border: 1px solid #eee;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
+    }
+    .submit-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 500;
+      transition: all 0.3s;
+      font-family: 'Poppins', sans-serif;
+    }
+    .submit-btn:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+    }
+    .note {
+      font-size: 14px;
+      color: #666;
+      margin-top: 30px;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Get Premium Telegram Access</h1>
+    <p style="text-align: center; margin-bottom: 20px;">Pay ₹499 to join our exclusive content</p>
+    
+    <div class="qr-container">
+      <h3>Scan QR Code to Pay</h3>
+      <img src="QR.jpg" alt="Payment QR Code" class="qr-code">
+      <p>Amount: ₹499</p>
+      <p><small>(UPI ID: 7069611312@fam)</small></p>
+    </div>
+
+    <form id="accessForm">
+      <div class="form-group">
+        <label for="paymentProof">Upload Payment Screenshot</label>
+        <input type="file" id="paymentProof" accept="image/*" required>
+        <small>File should clearly show transaction details</small>
+      </div>
+      
+      <div class="form-group">
+        <label for="telegramUsername">Your Telegram Username</label>
+        <input type="text" id="telegramUsername" placeholder="@username" required>
+        <small>Include the @ symbol</small>
+      </div>
+      
+      <div class="form-group">
+        <label for="transactionId">Transaction ID (Optional)</label>
+        <input type="text" id="transactionId" placeholder="UPI Transaction ID">
+        <small>Found in your payment receipt</small>
+      </div>
+      
+      <div class="loading" id="loadingIndicator">
+        <p>Submitting your request...</p>
+      </div>
+      
+      <button type="submit" class="submit-btn" id="submitButton">Submit Request</button>
+    </form>
+    
+    <div class="note">
+      <p>We'll verify your payment and add you to the Telegram group within 6 hours.</p>
+      <p>For any issues, contact @Sarthak_Patelll on Telegram</p>
+      <p><strong>Note:</strong> Make sure your Telegram username is correct and your account is not private.</p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('accessForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      // Show loading indicator
+      document.getElementById('loadingIndicator').style.display = 'block';
+      document.getElementById('submitButton').disabled = true;
+      
+      const formData = new FormData();
+      formData.append('paymentProof', document.getElementById('paymentProof').files[0]);
+      formData.append('telegramUsername', document.getElementById('telegramUsername').value.trim());
+      formData.append('transactionId', document.getElementById('transactionId').value.trim());
+      
+      try {
+        const response = await fetch('/submit-request', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if(response.ok) {
+          const result = await response.json();
+          if(result.success) {
+            alert('Request submitted successfully! We will add you to the group within 6 hours.');
+            document.getElementById('accessForm').reset();
+            
+            // Optional: Show Telegram contact immediately
+            const contactDiv = document.createElement('div');
+            contactDiv.innerHTML = `
+              <div class="note" style="margin-top:20px;background:#f8f9fa;padding:15px;border-radius:8px;">
+                <p>For faster access, contact @YourSupportHandle on Telegram with your payment details.</p>
+              </div>
+            `;
+            document.querySelector('.container').appendChild(contactDiv);
+          } else {
+            throw new Error(result.error || 'Submission failed');
+          }
+        } else {
+          throw new Error('Server responded with error');
+        }
+      } catch(error) {
+        console.error('Submission error:', error);
+        alert('Error: ' + (error.message || 'Failed to submit request. Please try again or contact support.'));
+      } finally {
+        document.getElementById('loadingIndicator').style.display = 'none';
+        document.getElementById('submitButton').disabled = false;
+      }
+    });
+
+    // Validate Telegram username format
+    document.getElementById('telegramUsername').addEventListener('blur', function() {
+      const username = this.value.trim();
+      if(username && !username.startsWith('@')) {
+        this.value = '@' + username;
+      }
+    });
+  </script>
+</body>
+</html>
