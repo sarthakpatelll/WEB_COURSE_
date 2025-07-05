@@ -101,7 +101,7 @@ app.post('/submit-request', upload.single('paymentProof'), (req, res) => {
 });
 
 // Admin
-app.get('/admin', (req, res) => {
+app.get('/admin/login', (req, res) => {
   res.render('admin-login', { 
     error: null,
     username: ''
