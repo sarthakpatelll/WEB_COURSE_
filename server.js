@@ -48,6 +48,7 @@ app.use(session({
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.set('trust proxy', 1);
 
 // In-memory storage
 let submissions = [];
@@ -154,6 +155,16 @@ app.get('/admin/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/admin/login');  // Fixed
 });
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || '12/10/05',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' // optional, but helps
+  }
+}));
 
 // Error handler
 app.use((err, req, res, next) => {
