@@ -5,6 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
+
 const app = express();
 
 // Configure file storage
@@ -47,6 +48,7 @@ app.use(session({
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.set('trust proxy', 1);
 
 // In-memory storage
 let submissions = [];
@@ -60,7 +62,7 @@ const requireAuth = (req, res, next) => {
   if (req.session.admin) {
     return next();
   }
-  res.redirect('/admin');
+  res.redirect('/admin/login');
 };
 
 // Routes
@@ -100,14 +102,13 @@ app.post('/submit-request', upload.single('paymentProof'), (req, res) => {
   }
 });
 
-// Admin
-app.get('/admin', (req, res) => {
+// Admin login
+app.get('/admin/login', (req, res) => {
   res.render('admin-login', { 
     error: null,
     username: ''
   });
 });
-
 
 app.post('/admin/login', (req, res) => {
   if (req.body.password === ADMIN_PASSWORD) {
@@ -121,6 +122,7 @@ app.post('/admin/login', (req, res) => {
   }
 });
 
+// Admin dashboard
 app.get('/admin/dashboard', requireAuth, (req, res) => {
   res.render('admin-dashboard', {
     submissions: submissions.sort((a, b) => b.timestamp - a.timestamp),
@@ -128,6 +130,7 @@ app.get('/admin/dashboard', requireAuth, (req, res) => {
   });
 });
 
+// Update status
 app.post('/admin/update-status', requireAuth, (req, res) => {
   const { id, status } = req.body;
   const validStatuses = ['pending', 'approved', 'rejected'];
@@ -147,12 +150,23 @@ app.post('/admin/update-status', requireAuth, (req, res) => {
   res.status(404).json({ success: false, error: 'Submission not found' });
 });
 
+// Logout
 app.get('/admin/logout', (req, res) => {
   req.session.destroy();
-  res.redirect('/admin');
+  res.redirect('/admin/login');  // Fixed
 });
 
-// Generic error handler
+app.use(session({
+  secret: process.env.SESSION_SECRET || '12/10/05',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' // optional, but helps
+  }
+}));
+
+// Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: err.message || 'Internal server error' });
@@ -161,6 +175,6 @@ app.use((err, req, res, next) => {
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`Admin panel: http://localhost:${PORT}/admin`);
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`🛠️  Admin login: http://localhost:${PORT}/admin/login`);
 });
