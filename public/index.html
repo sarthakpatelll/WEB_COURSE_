@@ -28,14 +28,15 @@
       max-width: 500px;
       margin: 0 auto;
       background: white;
-      padding: 30px;
+      padding: 20px;
       border-radius: 10px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     h1 {
       color: var(--primary-color);
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+      font-size: 24px;
     }
     .qr-container {
       text-align: center;
@@ -49,7 +50,7 @@
       border-radius: 8px;
     }
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
     label {
       display: block;
@@ -58,32 +59,34 @@
     }
     input[type="text"], input[type="file"] {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #ddd;
-      border-radius: 5px;
+      border-radius: 8px;
       font-family: 'Poppins', sans-serif;
+      font-size: 14px;
     }
     .submit-btn {
       background-color: var(--primary-color);
       color: white;
       border: none;
-      padding: 12px 20px;
+      padding: 14px 20px;
       font-size: 16px;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
       width: 100%;
       font-weight: 500;
       transition: all 0.3s;
       font-family: 'Poppins', sans-serif;
+      margin-top: 10px;
     }
     .submit-btn:hover {
       background-color: var(--secondary-color);
       transform: translateY(-2px);
     }
     .note {
-      font-size: 14px;
+      font-size: 13px;
       color: #666;
-      margin-top: 30px;
+      margin-top: 25px;
       text-align: center;
       line-height: 1.5;
     }
@@ -92,18 +95,173 @@
       text-align: center;
       margin: 10px 0;
     }
+    
+    /* New Video Gallery Styles */
+    .video-gallery {
+      margin: 20px 0;
+    }
+    .video-gallery h3 {
+      color: var(--secondary-color);
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    .video-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .video-thumbnail {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      aspect-ratio: 16/9;
+    }
+    .video-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .play-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255,255,255,0.8);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .play-icon:before {
+      content: "";
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 15px solid var(--primary-color);
+      margin-left: 3px;
+    }
+    .video-title {
+      font-size: 12px;
+      margin-top: 5px;
+      text-align: center;
+      font-weight: 500;
+      padding: 0 5px;
+    }
+    
+    /* Video Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      width: 95%;
+      max-width: 500px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .modal-video {
+      width: 100%;
+      display: block;
+    }
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .modal-video-title {
+      padding: 12px;
+      font-weight: 500;
+      text-align: center;
+      background: white;
+    }
+    
+    @media (max-width: 400px) {
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+      .container {
+        padding: 15px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Get Premium Telegram Access</h1>
-    <p style="text-align: center; margin-bottom: 20px;">Pay ₹499 to join our exclusive content</p>
+    <p style="text-align: center; margin-bottom: 15px; font-size: 15px;">Pay ₹499 to join our exclusive content</p>
     
+    <!-- Video Gallery Section -->
+    <div class="video-gallery">
+      <h3>Preview Course Videos</h3>
+      <div class="video-grid">
+        <!-- Video 1 -->
+        <div class="video-item" onclick="openModal('sample1.mp4', 'Introduction to Course')">
+          <div class="video-thumbnail">
+            <img src="video-thumb1.jpg" alt="Course Preview">
+            <div class="play-icon"></div>
+          </div>
+          <div class="video-title">Introduction to Course</div>
+        </div>
+        
+        <!-- Video 2 -->
+        <div class="video-item" onclick="openModal('sample2.mp4', 'Basic Techniques')">
+          <div class="video-thumbnail">
+            <img src="video-thumb2.jpg" alt="Course Preview">
+            <div class="play-icon"></div>
+          </div>
+          <div class="video-title">Basic Techniques</div>
+        </div>
+        
+        <!-- Video 3 -->
+        <div class="video-item" onclick="openModal('sample3.mp4', 'Advanced Lesson')">
+          <div class="video-thumbnail">
+            <img src="video-thumb3.jpg" alt="Course Preview">
+            <div class="play-icon"></div>
+          </div>
+          <div class="video-title">Advanced Lesson</div>
+        </div>
+        
+        <!-- Video 4 -->
+        <div class="video-item" onclick="openModal('sample4.mp4', 'Bonus Content')">
+          <div class="video-thumbnail">
+            <img src="video-thumb4.jpg" alt="Course Preview">
+            <div class="play-icon"></div>
+          </div>
+          <div class="video-title">Bonus Content</div>
+        </div>
+      </div>
+    </div>
+
     <div class="qr-container">
       <h3>Scan QR Code to Pay</h3>
-      <img src="QR1.jpg" alt="Payment QR Code" class="qr-code">
+      <img src="QR.jpg" alt="Payment QR Code" class="qr-code">
       <p>Amount: ₹499</p>
-      <p><small>(UPI ID: 7069611312@fam)</small></p>
+      <p><small>(UPI ID: 7069611312@ibl)</small></p>
     </div>
 
     <form id="accessForm">
@@ -131,14 +289,15 @@
       
       <button type="submit" class="submit-btn" id="submitButton">Submit Request</button>
     </form>
-    <div class="telegram-link-box" style="margin-top: 30px; padding: 20px; background: #f1f3f5; border-radius: 8px; text-align: center;">
-    <h3 style="color: var(--secondary-color); margin-bottom: 10px;">Request To Join Telegram</h3>
-    <p style="word-break: break-all;">
-    <a href="https://t.me/+fPZpL0dVLVMyM2U1" target="_blank" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
-      https://coursevault/TelegramGroupLink
-    </a>
-    </p>
-    <small style="color: #555;">After varify your details you will be join in channel.</small>
+    
+    <div class="telegram-link-box" style="margin-top: 25px; padding: 15px; background: #f1f3f5; border-radius: 8px; text-align: center;">
+      <h3 style="color: var(--secondary-color); margin-bottom: 10px; font-size: 16px;">Request To Join Telegram</h3>
+      <p style="word-break: break-all; margin-bottom: 5px;">
+        <a href="https://t.me/+fPZpL0dVLVMyM2U1" target="_blank" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+          https://coursevault/TelegramGroupLink
+        </a>
+      </p>
+      <small style="color: #555;">After verify your details you will be join in channel.</small>
     </div>
 
     <div class="note">
@@ -148,7 +307,46 @@
     </div>
   </div>
 
+  <!-- Video Modal -->
+  <div class="modal" id="videoModal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal()">×</button>
+      <video controls class="modal-video" id="modalVideoPlayer">
+        Your browser does not support the video tag.
+      </video>
+      <div class="modal-video-title" id="modalVideoTitle"></div>
+    </div>
+  </div>
+
   <script>
+    // Video Modal Functions
+    function openModal(videoSrc, title) {
+      const modal = document.getElementById('videoModal');
+      const videoPlayer = document.getElementById('modalVideoPlayer');
+      const videoTitle = document.getElementById('modalVideoTitle');
+      
+      videoPlayer.src = videoSrc;
+      videoTitle.textContent = title;
+      modal.style.display = 'flex';
+      videoPlayer.play();
+      
+      // Pause video when modal is closed
+      modal.addEventListener('click', function(e) {
+        if(e.target === modal) {
+          videoPlayer.pause();
+          modal.style.display = 'none';
+        }
+      });
+    }
+    
+    function closeModal() {
+      const modal = document.getElementById('videoModal');
+      const videoPlayer = document.getElementById('modalVideoPlayer');
+      videoPlayer.pause();
+      modal.style.display = 'none';
+    }
+
+    // Form Submission
     document.getElementById('accessForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
